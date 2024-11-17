@@ -1,11 +1,23 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { PersonaService } from './persona.service';
+import { Persona } from './persona.entity';
 
-@Controller({})
+@Controller('persona')
 export class PersonaController {
+  constructor(private readonly personaService: PersonaService) {}
 
-    @Get("/Personas")
-    getPersonas() {
-        return "Personas";
-    }
-    
+  @Get()
+  findAll(): Persona[] {
+    return this.personaService.findAll();
+  }
+
+  @Post()
+  create(@Body() persona: Persona): Persona {
+    return this.personaService.create(persona);
+  }
+
+  @Get(':id')
+  findById(@Param('id') id: number): Persona | undefined {
+    return this.personaService.findById(Number(id));
+  }
 }
