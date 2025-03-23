@@ -11,50 +11,56 @@ El objetivo principal de este proyecto es proporcionar un espacio en línea dond
 ## Miembros del Equipo
 
 - **Felipe Rueda Rivera**
-  - Correo: [f.rueda4@uniandes.edu.co](mailto:m.loveral@uniandes.edu.co)  
+
+  - Correo: [f.rueda4@uniandes.edu.co](mailto:m.loveral@uniandes.edu.co)
   - GitHub: [@Feru34](https://github.com/feru34)
 
-- **Catherine Jaque (Cathe)**  
-  - Correo: [p.jimenezj@uniandes.edu.co](mailto:p.jimenezj@uniandes.edu.co)  
+- **Catherine Jaque (Cathe)**
+
+  - Correo: [p.jimenezj@uniandes.edu.co](mailto:p.jimenezj@uniandes.edu.co)
   - GitHub: [@catherinejiq](https://github.com/catherinejiq)
 
-- **Jorge Bustamante**  
-  - Correo: [j.bustamantep@uniandes.edu.co](mailto:j.bustamantep@uniandes.edu.co)  
+- **Jorge Bustamante**
+
+  - Correo: [j.bustamantep@uniandes.edu.co](mailto:j.bustamantep@uniandes.edu.co)
   - GitHub: [@JorgeB-py](https://github.com/JorgeB-py)
 
-- **Manuela Lovera**  
-  - Correo: [m.loveral@uniandes.edu.co](mailto:m.loveral@uniandes.edu.co)  
+- **Manuela Lovera**
+
+  - Correo: [m.loveral@uniandes.edu.co](mailto:m.loveral@uniandes.edu.co)
   - GitHub: [@mloveral](https://github.com/mloveral)
 
-- **Juan David Anzola**  
-  - Correo: [j.anzolaq@uniandes.edu.co](mailto:j.anzolaq@uniandes.edu.co)  
+- **Juan David Anzola**
+
+  - Correo: [j.anzolaq@uniandes.edu.co](mailto:j.anzolaq@uniandes.edu.co)
   - GitHub: [@JuanDa-dev](https://github.com/JuanDa-dev)
 
-- **Ashlee Yin**  
-  - Correo: [a.yin@uniandes.edu.co](mailto:a.yin@uniandes.edu.co)  
+- **Ashlee Yin**
+
+  - Correo: [a.yin@uniandes.edu.co](mailto:a.yin@uniandes.edu.co)
   - GitHub: [@awangran](https://github.com/awangran)
 
-- **Lizeth Bejarano**  
-  - Correo: [l.bejarano1@uniandes.edu.co](mailto:l.bejarano1@uniandes.edu.co)  
+- **Lizeth Bejarano**
+
+  - Correo: [l.bejarano1@uniandes.edu.co](mailto:l.bejarano1@uniandes.edu.co)
   - GitHub: [@lizzz94](https://github.com/lizzz94)
 
-- **Camila Martínez**  
-  - Correo: [mc.martinezm12@uniandes.edu.co](mailto:mc.martinezm12@uniandes.edu.co)  
+- **Camila Martínez**
+
+  - Correo: [mc.martinezm12@uniandes.edu.co](mailto:mc.martinezm12@uniandes.edu.co)
   - GitHub: [@CamilaMartinez-MISO](https://github.com/CamilaMartinez-MISO)
 
-- **Tomás Pardo**  
-  - Correo: [t.pardo@uniandes.edu.co](mailto:t.pardo@uniandes.edu.co)  
+- **Tomás Pardo**
+
+  - Correo: [t.pardo@uniandes.edu.co](mailto:t.pardo@uniandes.edu.co)
   - GitHub: [@Tpardo12](https://github.com/Tpardo12)
 
-- **Santiago Gómez**  
-  - Correo: [ds.gomezm1@uniandes.edu.co](mailto:ds.gomezm1@uniandes.edu.co)  
+- **Santiago Gómez**
+  - Correo: [ds.gomezm1@uniandes.edu.co](mailto:ds.gomezm1@uniandes.edu.co)
   - GitHub: [@Santigogo](https://github.com/Santigogo)
-    
-- **Alejandro Ortiz**  
-  - Correo: [a.ortiz1@uniandes.edu.co](mailto:a.ortiz1@uniandes.edu.co)  
+- **Alejandro Ortiz**
+  - Correo: [a.ortiz1@uniandes.edu.co](mailto:a.ortiz1@uniandes.edu.co)
   - GitHub: [@Alortiztique](https://github.com/Alortiztique)
-
-
 
 ## Tecnologías Utilizadas
 
@@ -62,7 +68,6 @@ El objetivo principal de este proyecto es proporcionar un espacio en línea dond
 - JavaScript
 - React.js
 - Node.js
-
 
 ## Instalación
 
@@ -126,4 +131,3 @@ Para detener el servidor de desarrollo, usa el siguiente comando en la terminal:
 ```bash
 Ctrl + C
 ```
-
