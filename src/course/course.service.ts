@@ -14,7 +14,6 @@ export class CourseService {
     this.collectionName = this.firestore.collection('course');
   }
 
-  // Mapeo de documento Firestore a Course
   private mapDocumentToCourse(doc: FirebaseFirestore.DocumentSnapshot): Course {
     const data = doc.data();
 
@@ -28,13 +27,12 @@ export class CourseService {
       complexity: data.complexity || CourseComplexity,
       base_price: data.base_price,
       code: data.code,
-      tutors: data.tutors, // Usamos IDs de los tutores
-      topics: data.topics, // IDs de los topics
+      tutors: data.tutors,
+      topics: data.topics,
       group_tutoring_sessions: data.group_tutoring_sessions,
     };
   }
 
-  // Crear un curso
   async create(createCourseDto: CreateCourseDto): Promise<Course> {
     const courseRef = this.collectionName.doc();
 
@@ -44,9 +42,9 @@ export class CourseService {
       complexity: createCourseDto.complexity,
       base_price: createCourseDto.base_price,
       code: createCourseDto.code,
-      tutors: createCourseDto.tutor_ids || [], // tutor_ids es opcional
-      topics: [], // Asumimos que los topics serán añadidos más tarde
-      group_tutoring_sessions: [], // Lo mismo para los group_tutoring_sessions
+      tutors: createCourseDto.tutor_ids || [],
+      topics: [],
+      group_tutoring_sessions: [],
     };
 
     await courseRef.set(courseData);
@@ -54,7 +52,6 @@ export class CourseService {
     return courseData;
   }
 
-  // Obtener todos los cursos
   async findAll(): Promise<Course[]> {
     const snapshot = await this.collectionName.get();
 
@@ -68,7 +65,6 @@ export class CourseService {
     });
   }
 
-  // Obtener un curso por ID
   async findOne(id: string): Promise<Course> {
     const courseDoc = await this.collectionName.doc(id).get();
 
@@ -80,7 +76,6 @@ export class CourseService {
     return { id: courseDoc.id, ...course };
   }
 
-  // Actualizar un curso
   async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const courseRef = this.collectionName.doc(id);
     const courseDoc = await courseRef.get();
@@ -103,7 +98,6 @@ export class CourseService {
     return this.mapDocumentToCourse(await courseRef.get());
   }
 
-  // Eliminar un curso
   async remove(id: string): Promise<void> {
     const courseRef = this.collectionName.doc(id);
     const courseDoc = await courseRef.get();

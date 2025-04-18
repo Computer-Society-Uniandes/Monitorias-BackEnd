@@ -18,7 +18,6 @@ export class AvailabilityService {
     this.collectionName = this.firestore.collection('availability');
   }
 
-  // Mapeo de documento Firestore a Availability
   private mapDocumentToAvailability(
     doc: FirebaseFirestore.DocumentSnapshot,
   ): Availability {
@@ -40,19 +39,16 @@ export class AvailabilityService {
     };
   }
 
-  // Crear disponibilidad
   async create(
     createAvailabilityDto: CreateAvailabilityDto,
   ): Promise<Availability> {
     const { tutor_id, schedule_id } = createAvailabilityDto;
 
-    // Validar existencia del tutor
     const tutorDoc = await this.collectionName.doc(tutor_id).get();
     if (!tutorDoc.exists) {
       throw new NotFoundException(`Tutor with ID ${tutor_id} not found`);
     }
 
-    // Validar existencia del schedule
     const scheduleDoc = await this.collectionName.doc(schedule_id).get();
     if (!scheduleDoc.exists) {
       throw new NotFoundException(`Schedule with ID ${schedule_id} not found`);
@@ -87,14 +83,12 @@ export class AvailabilityService {
     };
   }
 
-  // Obtener todas las disponibilidades
   async findAll(): Promise<Availability[]> {
     const snapshot = await this.collectionName.get();
 
     return snapshot.docs.map((doc) => this.mapDocumentToAvailability(doc));
   }
 
-  // Obtener una disponibilidad por ID
   async findOne(id: string): Promise<Availability> {
     const doc = await this.collectionName.doc(id).get();
 
@@ -105,7 +99,6 @@ export class AvailabilityService {
     return this.mapDocumentToAvailability(doc);
   }
 
-  // Actualizar disponibilidad
   async update(
     id: string,
     updateAvailabilityDto: UpdateAvailabilityDto,
@@ -117,7 +110,6 @@ export class AvailabilityService {
       throw new NotFoundException(`Availability with ID ${id} not found`);
     }
 
-    // Crear objeto que usaremos para actualizar en Firestore
     const updated_ata: Record<string, any> = {
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     };
@@ -156,14 +148,12 @@ export class AvailabilityService {
       updated_ata.schedule_id = updateAvailabilityDto.schedule_id;
     }
 
-    // Actualizamos la disponibilidad
     await availabilityRef.update(updated_ata);
 
     const updatedDoc = await availabilityRef.get();
     return this.mapDocumentToAvailability(updatedDoc);
   }
 
-  // Eliminar disponibilidad
   async remove(id: string): Promise<void> {
     const doc = await this.collectionName.doc(id).get();
 

@@ -2,7 +2,6 @@ import { Module, Global } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import * as fs from 'fs';
 
-// Asegúrate de que la inicialización solo ocurra una vez
 const serviceAccount = JSON.parse(
   fs.readFileSync(
     './src/config/calico-5980a-firebase-adminsdk-fbsvc-e8b7ee50de.json',
@@ -23,7 +22,7 @@ const serviceAccount = JSON.parse(
             ),
           });
         } else {
-          return admin.app(); // Si ya está inicializado, usamos la app existente.
+          return admin.app();
         }
       },
     },

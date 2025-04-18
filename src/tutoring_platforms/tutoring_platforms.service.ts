@@ -13,7 +13,6 @@ export class TutoringPlatformsService {
   private readonly db = admin.firestore();
   private readonly collectionName = this.db.collection('tutoring_platform');
 
-  // Helper to map a Firestore DocumentSnapshot to our TutoringPlatform model
   private mapDocToTutoringPlatform(
     doc: FirebaseFirestore.DocumentSnapshot,
   ): TutoringPlatform {
@@ -33,9 +32,7 @@ export class TutoringPlatformsService {
     };
   }
 
-  // Create a new platform
   async create(dto: CreateTutoringPlatformDto): Promise<TutoringPlatform> {
-    // check uniqueness
     const exists = await this.collectionName
       .where('name', '==', dto.name)
       .limit(1)
@@ -59,13 +56,11 @@ export class TutoringPlatformsService {
     return this.mapDocToTutoringPlatform(doc);
   }
 
-  // Get all platforms
   async findAll(): Promise<TutoringPlatform[]> {
     const snap = await this.collectionName.get();
     return snap.docs.map((doc) => this.mapDocToTutoringPlatform(doc));
   }
 
-  // Get a platform by ID
   async findOne(id: string): Promise<TutoringPlatform> {
     const doc = await this.collectionName.doc(id).get();
     if (!doc.exists) {
@@ -74,7 +69,6 @@ export class TutoringPlatformsService {
     return this.mapDocToTutoringPlatform(doc);
   }
 
-  // Get a platform by name
   async findByName(name: string): Promise<TutoringPlatform> {
     const snap = await this.collectionName
       .where('name', '==', name)
@@ -88,13 +82,11 @@ export class TutoringPlatformsService {
     return this.mapDocToTutoringPlatform(snap.docs[0]);
   }
 
-  // Get only active platforms
   async findActive(): Promise<TutoringPlatform[]> {
     const snap = await this.collectionName.where('is_active', '==', true).get();
     return snap.docs.map((doc) => this.mapDocToTutoringPlatform(doc));
   }
 
-  // Update a platform
   async update(
     id: string,
     dto: UpdateTutoringPlatformDto,
@@ -105,7 +97,6 @@ export class TutoringPlatformsService {
       throw new NotFoundException(`Tutoring platform with ID ${id} not found`);
     }
 
-    // Prepare only the fields that were provided
     const updateData: Partial<TutoringPlatform> = {};
     if (dto.name !== undefined) updateData.name = dto.name;
     if (dto.url !== undefined) updateData.url = dto.url;
@@ -119,7 +110,6 @@ export class TutoringPlatformsService {
     return this.mapDocToTutoringPlatform(updatedDoc);
   }
 
-  // Delete a platform
   async remove(id: string): Promise<void> {
     const ref = this.collectionName.doc(id);
     const doc = await ref.get();
@@ -129,7 +119,6 @@ export class TutoringPlatformsService {
     await ref.delete();
   }
 
-  // Toggle the active flag
   async toggleActive(id: string): Promise<TutoringPlatform> {
     const ref = this.collectionName.doc(id);
     const doc = await ref.get();

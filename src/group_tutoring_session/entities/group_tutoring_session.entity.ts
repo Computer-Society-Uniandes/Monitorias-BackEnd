@@ -9,6 +9,6 @@ export class GroupTutoringSession {
   time_added: number;
   price: number;
   course_id: string;
-  student_ids?: string[]; // Array de IDs de estudiantes (en Firestore será una lista)
-  tutor_ids?: string[]; // Array de IDs de tutores (en Firestore será una lista)
+  student_ids?: string[];
+  tutor_ids?: string[];
 }

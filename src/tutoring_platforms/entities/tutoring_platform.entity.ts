@@ -1,5 +1,5 @@
 export class TutoringPlatform {
-  id: string; // Firestore generará un ID automáticamente si no lo pasas
+  id: string;
   name: string;
   url: string;
   description: string | null;

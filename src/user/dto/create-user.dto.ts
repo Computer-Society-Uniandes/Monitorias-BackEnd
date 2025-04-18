@@ -1,5 +1,3 @@
-// src/user/dto/create-user.dto.ts
-
 import {
   IsString,
   IsEnum,

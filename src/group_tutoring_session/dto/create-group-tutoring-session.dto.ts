@@ -38,15 +38,15 @@ export class CreateGroupTutoringSessionDto {
   @Min(0)
   price: number;
 
-  @IsString() // Ahora es un string ID de curso
+  @IsString()
   @IsNotEmpty()
   course_id: string;
 
   @IsArray()
   @IsOptional()
-  student_ids?: string[]; // IDs de estudiantes como array de strings
+  student_ids?: string[];
 
   @IsArray()
   @IsOptional()
-  tutor_ids?: string[]; // IDs de tutores como array de strings
+  tutor_ids?: string[];
 }

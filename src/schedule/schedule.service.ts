@@ -61,7 +61,6 @@ export class ScheduleService {
   }): Promise<Schedule> {
     const schedule = await this.findByTutor(params.tutor_id);
 
-    // Fetch availabilities from 'availabilities' collection
     const availabilitySnapshot = await admin
       .firestore()
       .collection('availabilities')
@@ -97,7 +96,6 @@ export class ScheduleService {
   }
 
   async update(id: string, updateDto: UpdateScheduleDto): Promise<Schedule> {
-    // Validations
     if (
       updateDto.min_booking_notice !== undefined &&
       updateDto.min_booking_notice < 0
@@ -130,7 +128,6 @@ export class ScheduleService {
   }
 
   async remove(id: string): Promise<void> {
-    // Check for active availabilities
     const availabilitiesSnapshot = await admin
       .firestore()
       .collection('availabilities')

@@ -14,7 +14,6 @@ export class GroupTutoringSessionService {
     this.collectionName = this.firestore.collection('group_tutoring_session');
   }
 
-  // Mapeo de documento Firestore a GroupTutoringSession
   private mapDocumentToGroupTutoringSession(
     doc: FirebaseFirestore.DocumentSnapshot,
   ): GroupTutoringSession {
@@ -25,8 +24,8 @@ export class GroupTutoringSessionService {
 
     return {
       id: doc.id,
-      start_hour: data.start_hour, // Firestore Timestamp
-      end_hour: data.end_hour, // Firestore Timestamp
+      start_hour: data.start_hour,
+      end_hour: data.end_hour,
       notes: data.notes,
       status: data.status,
       time_added: data.time_added,
@@ -37,7 +36,6 @@ export class GroupTutoringSessionService {
     };
   }
 
-  // Crear una nueva sesión
   async create(
     createGroupTutoringSessionDto: CreateGroupTutoringSessionDto,
   ): Promise<GroupTutoringSession> {
@@ -57,10 +55,9 @@ export class GroupTutoringSessionService {
       course_id: createGroupTutoringSessionDto.course_id,
       student_ids: createGroupTutoringSessionDto.student_ids || [],
       tutor_ids: createGroupTutoringSessionDto.tutor_ids || [],
-      created_at: admin.firestore.FieldValue.serverTimestamp(), // Timestamp
+      created_at: admin.firestore.FieldValue.serverTimestamp(),
     };
 
-    // Guardar en Firestore
     await groupTutoringSessionRef.set(groupTutoringSessionData);
 
     return {
@@ -69,7 +66,6 @@ export class GroupTutoringSessionService {
     };
   }
 
-  // Obtener todas las sesiones de tutoría grupales
   async findAll(): Promise<GroupTutoringSession[]> {
     const snapshot = await this.collectionName.get();
     if (snapshot.empty) {
@@ -81,7 +77,6 @@ export class GroupTutoringSessionService {
     );
   }
 
-  // Obtener una sesión de tutoría grupal por ID
   async findOne(id: string): Promise<GroupTutoringSession> {
     const doc = await this.collectionName.doc(id).get();
 
@@ -94,7 +89,6 @@ export class GroupTutoringSessionService {
     return this.mapDocumentToGroupTutoringSession(doc);
   }
 
-  // Actualizar una sesión de tutoría grupal
   async update(
     id: string,
     updateGroupTutoringSessionDto: UpdateGroupTutoringSessionDto,
@@ -127,7 +121,6 @@ export class GroupTutoringSessionService {
     return this.mapDocumentToGroupTutoringSession(updatedDoc);
   }
 
-  // Eliminar una sesión de tutoría grupal
   async remove(id: string): Promise<void> {
     const groupTutoringSessionRef = this.collectionName.doc(id);
     const doc = await groupTutoringSessionRef.get();

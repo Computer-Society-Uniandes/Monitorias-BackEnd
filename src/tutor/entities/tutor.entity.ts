@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 export class Tutor {
-  id: string; // Firestore document ID
+  id: string;
   first_name: string;
   last_name: string;
   school_email: string;

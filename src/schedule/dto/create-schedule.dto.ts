@@ -33,5 +33,5 @@ export class CreateScheduleDto {
 
   @IsString()
   @IsOptional()
-  tutor_id?: string; // Usamos string para IDs en Firestore
+  tutor_id?: string;
 }

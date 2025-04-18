@@ -31,5 +31,5 @@ export class CreateCourseDto {
 
   @IsArray()
   @IsOptional()
-  tutor_ids?: string[]; // Ahora es un array de IDs de tutores
+  tutor_ids?: string[];
 }

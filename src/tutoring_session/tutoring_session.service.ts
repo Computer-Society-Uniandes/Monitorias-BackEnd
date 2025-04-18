@@ -111,7 +111,7 @@ export class TutoringSessionService {
     const updatedSession: TutoringSession = {
       ...session,
       ...dto,
-      start_time: session.start_time, // <-- aseguramos que son Date
+      start_time: session.start_time,
       end_time: session.end_time,
       updated_at: new Date(),
     };
