@@ -41,6 +41,7 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
+calico-5980a-firebase-adminsdk-fbsvc-e8b7ee50de.json
 
 # temp directory
 .temp

@@ -1,20 +1,16 @@
-import { GroupTutoringSession } from 'src/group_tutoring_session/entities/group_tutoring_session.entity';
-import { TutoringSession } from 'src/tutoring_session/entities/tutoring_session.entity';
-import { User } from 'src/user/entities/user.entity';
-import { Entity, ChildEntity, ManyToMany, OneToMany } from 'typeorm';
+export class Student {
+  id: string; // Firebase Doc ID
+  userId: string; // referencia manual al usuario base
 
-@Entity()
-@ChildEntity()
-export class Student extends User {
-  @ManyToMany(
-    () => GroupTutoringSession,
-    (group_tutoring_sessions) => group_tutoring_sessions.students,
-  )
-  group_tutoring_sessions: GroupTutoringSession[];
+  name: string;
+  bio: string;
+  phone_number: string;
+  major: string;
 
-  @OneToMany(
-    () => TutoringSession,
-    (tutoring_sessions) => tutoring_sessions.student,
-  )
-  tutoring_sessions: TutoringSession[];
+  // Relaciones por ID
+  group_tutoring_session_id?: string[]; // Referencias a sesiones grupales
+  tutoring_session_ids?: string[]; // Referencias a sesiones 1:1
+
+  created_at?: FirebaseFirestore.Timestamp;
+  updated_at?: FirebaseFirestore.Timestamp;
 }

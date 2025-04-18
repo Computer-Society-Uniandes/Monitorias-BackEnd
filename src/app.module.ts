@@ -12,9 +12,11 @@ import { ReviewModule } from './review/review.module';
 import { TutoringPlatformsModule } from './tutoring_platforms/tutoring_platforms.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { AvailabilityModule } from './availability/availability.module';
+import { FirebaseModule } from './firebase/firebase.module';
 
 @Module({
   imports: [
+    FirebaseModule,
     UserModule,
     StudentModule,
     TutorModule,

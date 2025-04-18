@@ -1,10 +1,3 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  TableInheritance,
-} from 'typeorm';
-
 export enum UserMajor {
   ISIS = 'Ingenieria de Sistemas y Computacion',
   IIND = 'Ingenieria Industrial',
@@ -12,25 +5,14 @@ export enum UserMajor {
   IBIO = 'Ingenieria Biomedica',
 }
 
-@Entity()
-@TableInheritance({ column: { type: 'varchar', name: 'type' } })
+// Modelo plano para Firestore
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+  id: string;
   name: string;
-
-  @Column()
-  bio: string;
-
-  @Column()
+  bio?: string;
   phone_number: string;
-
-  @Column({
-    type: 'enum',
-    enum: UserMajor,
-    default: UserMajor.ISIS,
-  })
   major: UserMajor;
+
+  created_at?: FirebaseFirestore.Timestamp | Date;
+  updated_at?: FirebaseFirestore.Timestamp | Date;
 }
