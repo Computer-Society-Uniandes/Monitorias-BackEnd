@@ -11,7 +11,7 @@ import { MajorService } from './major.service';
 import { CreateMajorDto } from './dto/create-major.dto';
 import { UpdateMajorDto } from './dto/update-major.dto';
 
-@Controller('majors')
+@Controller('major')
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}
 
