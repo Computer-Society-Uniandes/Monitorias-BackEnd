@@ -6,30 +6,26 @@ import { User, UserMajor } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
-  private firestore: FirebaseFirestore.Firestore;
-  private collectionName = 'user';
-
-  constructor() {
-    this.firestore = admin.firestore();
-  }
+  private readonly db = admin.firestore();
+  private readonly collectionName = this.db.collection('user');
 
   private mapDocToUser(doc: FirebaseFirestore.DocumentSnapshot): User {
     const data = doc.data();
     if (!data) {
       throw new Error(`No data found for user ${doc.id}`);
     }
+
     return {
       id: doc.id,
       name: data.name,
       bio: data.bio ?? null,
       phone_number: data.phone_number,
       major: data.major as UserMajor,
-      created_at: data.created_at ? data.created_at.toDate() : null,
-      updated_at: data.updated_at ? data.updated_at.toDate() : null,
+      created_at: data.created_at?.toDate() ?? null,
+      updated_at: data.updated_at?.toDate() ?? null,
     };
   }
 
-  // Crear un nuevo usuario
   async create(createUserDto: CreateUserDto): Promise<User> {
     const userData = {
       name: createUserDto.name,
@@ -40,41 +36,32 @@ export class UserService {
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     };
 
-    const docRef = await this.firestore
-      .collection(this.collectionName)
-      .add(userData);
-    const doc = await docRef.get();
-    return this.mapDocToUser(doc); // Retornamos el usuario con el ID generado
+    const ref = await this.collectionName.add(userData);
+    const doc = await ref.get();
+    return this.mapDocToUser(doc);
   }
 
-  // Obtener todos los usuarios
   async findAll(): Promise<User[]> {
-    const snapshot = await this.firestore.collection(this.collectionName).get();
-    return snapshot.docs.map((doc) => this.mapDocToUser(doc)); // Mapeamos los documentos
+    const snap = await this.collectionName.get();
+    return snap.docs.map((doc) => this.mapDocToUser(doc));
   }
 
-  // Obtener un solo usuario por ID
   async findOne(id: string): Promise<User> {
-    const doc = await this.firestore
-      .collection(this.collectionName)
-      .doc(id)
-      .get();
+    const doc = await this.collectionName.doc(id).get();
     if (!doc.exists) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return this.mapDocToUser(doc); // Retornamos el usuario con la data de Firestore
+    return this.mapDocToUser(doc);
   }
 
-  // Actualizar un usuario
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const userRef = this.firestore.collection(this.collectionName).doc(id);
-    const doc = await userRef.get();
+    const ref = this.collectionName.doc(id);
+    const doc = await ref.get();
 
     if (!doc.exists) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    // Actualizar solo los campos que están siendo modificados
     const updatedData = {
       name: updateUserDto.name,
       bio: updateUserDto.bio ?? null,
@@ -83,21 +70,20 @@ export class UserService {
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     };
 
-    await userRef.update(updatedData);
+    await ref.update(updatedData);
 
-    const updatedDoc = await userRef.get();
-    return this.mapDocToUser(updatedDoc); // Retornamos el usuario actualizado
+    const updatedDoc = await ref.get();
+    return this.mapDocToUser(updatedDoc);
   }
 
-  // Eliminar un usuario
   async remove(id: string): Promise<void> {
-    const userRef = this.firestore.collection(this.collectionName).doc(id);
-    const doc = await userRef.get();
+    const ref = this.collectionName.doc(id);
+    const doc = await ref.get();
 
     if (!doc.exists) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    await userRef.delete(); // Eliminamos el documento de Firestore
+    await ref.delete();
   }
 }
