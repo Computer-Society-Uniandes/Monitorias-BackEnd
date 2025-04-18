@@ -13,6 +13,7 @@ import { TutoringPlatformsModule } from './tutoring_platforms/tutoring_platforms
 import { ScheduleModule } from './schedule/schedule.module';
 import { AvailabilityModule } from './availability/availability.module';
 import { FirebaseModule } from './firebase/firebase.module';
+import { MajorModule } from './major/major.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FirebaseModule } from './firebase/firebase.module';
     TutoringPlatformsModule,
     ScheduleModule,
     AvailabilityModule,
+    MajorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
