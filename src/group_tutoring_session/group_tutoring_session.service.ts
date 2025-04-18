@@ -7,10 +7,11 @@ import { UpdateGroupTutoringSessionDto } from './dto/update-group-tutoring-sessi
 @Injectable()
 export class GroupTutoringSessionService {
   private firestore: FirebaseFirestore.Firestore;
-  private collectionName = 'group_tutoring_sessions';
+  private collectionName;
 
   constructor() {
     this.firestore = admin.firestore();
+    this.collectionName = this.firestore.collection('group_tutoring_session');
   }
 
   // Mapeo de documento Firestore a GroupTutoringSession
@@ -40,9 +41,7 @@ export class GroupTutoringSessionService {
   async create(
     createGroupTutoringSessionDto: CreateGroupTutoringSessionDto,
   ): Promise<GroupTutoringSession> {
-    const groupTutoringSessionRef = this.firestore
-      .collection(this.collectionName)
-      .doc();
+    const groupTutoringSessionRef = this.collectionName.doc();
 
     const groupTutoringSessionData = {
       start_hour: admin.firestore.Timestamp.fromDate(
@@ -72,7 +71,7 @@ export class GroupTutoringSessionService {
 
   // Obtener todas las sesiones de tutoría grupales
   async findAll(): Promise<GroupTutoringSession[]> {
-    const snapshot = await this.firestore.collection(this.collectionName).get();
+    const snapshot = await this.collectionName.get();
     if (snapshot.empty) {
       return [];
     }
@@ -84,10 +83,7 @@ export class GroupTutoringSessionService {
 
   // Obtener una sesión de tutoría grupal por ID
   async findOne(id: string): Promise<GroupTutoringSession> {
-    const doc = await this.firestore
-      .collection(this.collectionName)
-      .doc(id)
-      .get();
+    const doc = await this.collectionName.doc(id).get();
 
     if (!doc.exists) {
       throw new NotFoundException(
@@ -103,9 +99,7 @@ export class GroupTutoringSessionService {
     id: string,
     updateGroupTutoringSessionDto: UpdateGroupTutoringSessionDto,
   ): Promise<GroupTutoringSession> {
-    const groupTutoringSessionRef = this.firestore
-      .collection(this.collectionName)
-      .doc(id);
+    const groupTutoringSessionRef = this.collectionName.doc(id);
     const doc = await groupTutoringSessionRef.get();
 
     if (!doc.exists) {
@@ -114,7 +108,7 @@ export class GroupTutoringSessionService {
       );
     }
 
-    const updated_ata = {
+    const updatedData = {
       ...updateGroupTutoringSessionDto,
       start_hour: admin.firestore.Timestamp.fromDate(
         updateGroupTutoringSessionDto.start_hour,
@@ -127,7 +121,7 @@ export class GroupTutoringSessionService {
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     };
 
-    await groupTutoringSessionRef.update(updated_ata);
+    await groupTutoringSessionRef.update(updatedData);
 
     const updatedDoc = await groupTutoringSessionRef.get();
     return this.mapDocumentToGroupTutoringSession(updatedDoc);
@@ -135,9 +129,7 @@ export class GroupTutoringSessionService {
 
   // Eliminar una sesión de tutoría grupal
   async remove(id: string): Promise<void> {
-    const groupTutoringSessionRef = this.firestore
-      .collection(this.collectionName)
-      .doc(id);
+    const groupTutoringSessionRef = this.collectionName.doc(id);
     const doc = await groupTutoringSessionRef.get();
 
     if (!doc.exists) {

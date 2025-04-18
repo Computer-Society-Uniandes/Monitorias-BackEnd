@@ -7,10 +7,11 @@ import { Review } from './entities/review.entity';
 @Injectable()
 export class ReviewService {
   private firestore: FirebaseFirestore.Firestore;
-  private collectionName = 'reviews';
-
+  private collectionName;
+  x;
   constructor() {
     this.firestore = admin.firestore();
+    this.collectionName = this.firestore.collection('review');
   }
 
   private mapDocumentToReview(doc: FirebaseFirestore.DocumentSnapshot): Review {
@@ -32,7 +33,7 @@ export class ReviewService {
   }
 
   async create(createReviewDto: CreateReviewDto): Promise<Review> {
-    const reviewRef = this.firestore.collection(this.collectionName).doc();
+    const reviewRef = this.collectionName.doc();
 
     const reviewData = {
       date: admin.firestore.Timestamp.fromDate(createReviewDto.date),
@@ -53,15 +54,12 @@ export class ReviewService {
   }
 
   async findAll(): Promise<Review[]> {
-    const snapshot = await this.firestore.collection(this.collectionName).get();
+    const snapshot = await this.collectionName.get();
     return snapshot.docs.map((doc) => this.mapDocumentToReview(doc));
   }
 
   async findOne(id: string): Promise<Review> {
-    const doc = await this.firestore
-      .collection(this.collectionName)
-      .doc(id)
-      .get();
+    const doc = await this.firestore.collection('review').doc(id).get();
 
     if (!doc.exists) {
       throw new NotFoundException(`Review with ID ${id} not found`);
@@ -71,31 +69,31 @@ export class ReviewService {
   }
 
   async update(id: string, updateReviewDto: UpdateReviewDto): Promise<Review> {
-    const reviewRef = this.firestore.collection(this.collectionName).doc(id);
+    const reviewRef = this.collectionName.doc(id);
     const doc = await reviewRef.get();
 
     if (!doc.exists) {
       throw new NotFoundException(`Review with ID ${id} not found`);
     }
 
-    const updated_ata: Partial<Review> = {
+    const updatedData: Partial<Review> = {
       ...updateReviewDto,
     };
 
     if (updateReviewDto.date) {
-      updated_ata.date = admin.firestore.Timestamp.fromDate(
+      updatedData.date = admin.firestore.Timestamp.fromDate(
         updateReviewDto.date,
       ) as any;
     }
 
-    await reviewRef.update(updated_ata);
+    await reviewRef.update(updatedData);
 
     const updatedDoc = await reviewRef.get();
     return this.mapDocumentToReview(updatedDoc);
   }
 
   async remove(id: string): Promise<void> {
-    const reviewRef = this.firestore.collection(this.collectionName).doc(id);
+    const reviewRef = this.collectionName.doc(id);
     const doc = await reviewRef.get();
 
     if (!doc.exists) {

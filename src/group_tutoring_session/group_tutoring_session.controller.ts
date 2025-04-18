@@ -13,7 +13,7 @@ import { GroupTutoringSessionService } from './group_tutoring_session.service';
 import { CreateGroupTutoringSessionDto } from './dto/create-group-tutoring-session.dto';
 import { UpdateGroupTutoringSessionDto } from './dto/update-group-tutoring-session.dto';
 
-@Controller('group-tutoring-sessions')
+@Controller('group_tutoring_session')
 export class GroupTutoringSessionController {
   constructor(
     private readonly groupTutoringSessionService: GroupTutoringSessionService,

@@ -14,7 +14,7 @@ import { TutoringPlatformsService } from './tutoring_platforms.service';
 import { CreateTutoringPlatformDto } from './dto/create_tutoring_platform.dto';
 import { UpdateTutoringPlatformDto } from './dto/update_tutoring_platform.dto';
 
-@Controller('tutoring-platforms')
+@Controller('tutoring_platform')
 export class TutoringPlatformsController {
   constructor(
     private readonly tutoringPlatformsService: TutoringPlatformsService,

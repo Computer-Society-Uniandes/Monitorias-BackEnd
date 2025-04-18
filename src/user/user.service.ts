@@ -7,13 +7,12 @@ import { User, UserMajor } from './entities/user.entity';
 @Injectable()
 export class UserService {
   private firestore: FirebaseFirestore.Firestore;
-  private collectionName = 'users';
+  private collectionName = 'user';
 
   constructor() {
     this.firestore = admin.firestore();
   }
 
-  // Función para mapear un documento de Firestore a un objeto User
   private mapDocToUser(doc: FirebaseFirestore.DocumentSnapshot): User {
     const data = doc.data();
     if (!data) {

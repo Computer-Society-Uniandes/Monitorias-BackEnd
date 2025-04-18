@@ -14,7 +14,7 @@ import { TopicsService } from './topics.service';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { UpdateTopicDto } from './dto/update-topic.dto';
 
-@Controller('topics')
+@Controller('topic')
 export class TopicsController {
   constructor(private readonly topicsService: TopicsService) {}
 

@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class TutoringSessionService {
   private db = getFirestore();
-  private collection = this.db.collection('tutoring_sessions');
+  private collectionName = this.db.collection('tutoring_session');
 
   async create(dto: CreateTutoringSessionDto): Promise<TutoringSession> {
     const start_time = new Date(
@@ -41,17 +41,17 @@ export class TutoringSessionService {
       reviews: [],
     };
 
-    await this.collection.doc(id).set(session);
+    await this.collectionName.doc(id).set(session);
     return session;
   }
 
   async findAll(): Promise<TutoringSession[]> {
-    const snapshot = await this.collection.get();
+    const snapshot = await this.collectionName.get();
     return snapshot.docs.map((doc) => doc.data() as TutoringSession);
   }
 
   async findOne(id: string): Promise<TutoringSession> {
-    const doc = await this.collection.doc(id).get();
+    const doc = await this.collectionName.doc(id).get();
     if (!doc.exists) {
       throw new NotFoundException(`Tutoring session with ID ${id} not found`);
     }
@@ -59,14 +59,14 @@ export class TutoringSessionService {
   }
 
   async findByTutor(tutor_id: string): Promise<TutoringSession[]> {
-    const snapshot = await this.collection
+    const snapshot = await this.collectionName
       .where('tutor.id', '==', tutor_id)
       .get();
     return snapshot.docs.map((doc) => doc.data() as TutoringSession);
   }
 
   async findByStudent(student_id: string): Promise<TutoringSession[]> {
-    const snapshot = await this.collection
+    const snapshot = await this.collectionName
       .where('student.id', '==', student_id)
       .get();
     return snapshot.docs.map((doc) => doc.data() as TutoringSession);
@@ -76,7 +76,7 @@ export class TutoringSessionService {
     startDate: Date,
     endDate: Date,
   ): Promise<TutoringSession[]> {
-    const snapshot = await this.collection
+    const snapshot = await this.collectionName
       .where('start_time', '>=', startDate)
       .where('start_time', '<=', endDate)
       .get();
@@ -116,7 +116,7 @@ export class TutoringSessionService {
       updated_at: new Date(),
     };
 
-    await this.collection.doc(id).set(updatedSession);
+    await this.collectionName.doc(id).set(updatedSession);
     return updatedSession;
   }
 
@@ -132,11 +132,11 @@ export class TutoringSessionService {
     }
     session.updated_at = new Date();
 
-    await this.collection.doc(id).set(session);
+    await this.collectionName.doc(id).set(session);
     return session;
   }
 
   async remove(id: string): Promise<void> {
-    await this.collection.doc(id).delete();
+    await this.collectionName.doc(id).delete();
   }
 }

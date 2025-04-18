@@ -10,10 +10,10 @@ import { Schedule } from './entities/schedule.entity';
 
 @Injectable()
 export class ScheduleService {
-  private scheduleCollection = admin.firestore().collection('schedules');
+  private collectionName = admin.firestore().collection('schedule');
 
   async create(createScheduleDto: CreateScheduleDto): Promise<Schedule> {
-    const docRef = await this.scheduleCollection.add({
+    const docRef = await this.collectionName.add({
       ...createScheduleDto,
       created_at: admin.firestore.FieldValue.serverTimestamp(),
     });
@@ -23,7 +23,7 @@ export class ScheduleService {
   }
 
   async findAll(): Promise<Schedule[]> {
-    const snapshot = await this.scheduleCollection.get();
+    const snapshot = await this.collectionName.get();
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -31,7 +31,7 @@ export class ScheduleService {
   }
 
   async findOne(id: string): Promise<Schedule> {
-    const doc = await this.scheduleCollection.doc(id).get();
+    const doc = await this.collectionName.doc(id).get();
 
     if (!doc.exists) {
       throw new NotFoundException(`Schedule with ID ${id} not found`);
@@ -41,7 +41,7 @@ export class ScheduleService {
   }
 
   async findByTutor(tutor_id: string): Promise<Schedule> {
-    const snapshot = await this.scheduleCollection
+    const snapshot = await this.collectionName
       .where('tutor_id', '==', tutor_id)
       .limit(1)
       .get();
@@ -120,12 +120,12 @@ export class ScheduleService {
       throw new BadRequestException('Buffer time cannot be negative');
     }
 
-    await this.scheduleCollection.doc(id).update({
+    await this.collectionName.doc(id).update({
       ...updateDto,
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    const updatedDoc = await this.scheduleCollection.doc(id).get();
+    const updatedDoc = await this.collectionName.doc(id).get();
     return { id: updatedDoc.id, ...updatedDoc.data() } as Schedule;
   }
 
@@ -144,6 +144,6 @@ export class ScheduleService {
       );
     }
 
-    await this.scheduleCollection.doc(id).delete();
+    await this.collectionName.doc(id).delete();
   }
 }

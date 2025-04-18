@@ -5,7 +5,6 @@ export enum UserMajor {
   IBIO = 'Ingenieria Biomedica',
 }
 
-// Modelo plano para Firestore
 export class User {
   id: string;
   name: string;

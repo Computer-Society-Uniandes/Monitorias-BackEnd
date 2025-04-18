@@ -8,13 +8,12 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  Query,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 
-@Controller('students')
+@Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 

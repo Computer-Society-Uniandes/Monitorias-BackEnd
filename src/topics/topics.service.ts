@@ -7,15 +7,15 @@ import { Topic } from './entities/topics.entity';
 @Injectable()
 export class TopicsService {
   private db: FirebaseFirestore.Firestore;
-  private TopicCollection: FirebaseFirestore.CollectionReference;
+  private collectionName: FirebaseFirestore.CollectionReference;
 
   constructor() {
     this.db = new Firestore();
-    this.TopicCollection = this.db.collection('topics');
+    this.collectionName = this.db.collection('topic');
   }
 
   async create(createTopicDto: CreateTopicDto): Promise<Topic> {
-    const docRef = this.TopicCollection.doc();
+    const docRef = this.collectionName.doc();
     const topic: Topic = {
       id: docRef.id,
       name: createTopicDto.name,
@@ -31,12 +31,12 @@ export class TopicsService {
   }
 
   async findAll(): Promise<Topic[]> {
-    const snapshot = await this.TopicCollection.get();
+    const snapshot = await this.collectionName.get();
     return snapshot.docs.map((doc) => doc.data() as Topic);
   }
 
   async findOne(id: string): Promise<Topic> {
-    const doc = await this.TopicCollection.doc(id).get();
+    const doc = await this.collectionName.doc(id).get();
     if (!doc.exists) {
       throw new NotFoundException(`Topic with ID ${id} not found`);
     }
@@ -44,17 +44,15 @@ export class TopicsService {
   }
 
   async findByCourse(course_id: string): Promise<Topic[]> {
-    const snapshot = await this.TopicCollection.where(
-      'course_id',
-      '==',
-      course_id,
-    ).get();
+    const snapshot = await this.collectionName
+      .where('course_id', '==', course_id)
+      .get();
 
     return snapshot.docs.map((doc) => doc.data() as Topic);
   }
 
   async searchTopics(query: string): Promise<Topic[]> {
-    const snapshot = await this.TopicCollection.get();
+    const snapshot = await this.collectionName.get();
     return snapshot.docs
       .map((doc) => doc.data() as Topic)
       .filter(
@@ -74,12 +72,11 @@ export class TopicsService {
       return topic;
     }
 
-    // Aquí podrías hacer lógica adicional para traer sesiones relacionadas desde Firestore si necesitas expandirlas
     return topic;
   }
 
   async update(id: string, updateTopicDto: UpdateTopicDto): Promise<Topic> {
-    const docRef = this.TopicCollection.doc(id);
+    const docRef = this.collectionName.doc(id);
     const existing = await docRef.get();
 
     if (!existing.exists) {
@@ -101,7 +98,7 @@ export class TopicsService {
   }
 
   async remove(id: string): Promise<void> {
-    const docRef = this.TopicCollection.doc(id);
+    const docRef = this.collectionName.doc(id);
     const doc = await docRef.get();
 
     if (!doc.exists) {

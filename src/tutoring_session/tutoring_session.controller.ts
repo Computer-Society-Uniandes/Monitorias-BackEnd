@@ -14,7 +14,7 @@ import { TutoringSessionService } from './tutoring_session.service';
 import { CreateTutoringSessionDto } from './dto/create_tutoring_session.dto';
 import { UpdateTutoringSessionDto } from './dto/update_tutoring_session.dto';
 
-@Controller('tutoring-sessions')
+@Controller('tutoring_session')
 export class TutoringSessionController {
   constructor(
     private readonly tutoringSessionService: TutoringSessionService,

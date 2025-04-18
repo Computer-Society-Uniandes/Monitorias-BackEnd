@@ -11,12 +11,14 @@ import { CreateAvailabilityDto } from './dto/create-availability.dto';
 @Injectable()
 export class AvailabilityService {
   private firestore: FirebaseFirestore.Firestore;
-  private collectionName = 'availabilities';
+  private collectionName;
 
   constructor() {
     this.firestore = admin.firestore();
+    this.collectionName = this.firestore.collection('availability');
   }
 
+  // Mapeo de documento Firestore a Availability
   private mapDocumentToAvailability(
     doc: FirebaseFirestore.DocumentSnapshot,
   ): Availability {
@@ -38,32 +40,25 @@ export class AvailabilityService {
     };
   }
 
+  // Crear disponibilidad
   async create(
     createAvailabilityDto: CreateAvailabilityDto,
   ): Promise<Availability> {
     const { tutor_id, schedule_id } = createAvailabilityDto;
 
     // Validar existencia del tutor
-    const tutorDoc = await this.firestore
-      .collection('tutors')
-      .doc(tutor_id)
-      .get();
+    const tutorDoc = await this.collectionName.doc(tutor_id).get();
     if (!tutorDoc.exists) {
       throw new NotFoundException(`Tutor with ID ${tutor_id} not found`);
     }
 
     // Validar existencia del schedule
-    const scheduleDoc = await this.firestore
-      .collection('schedules')
-      .doc(schedule_id)
-      .get();
+    const scheduleDoc = await this.collectionName.doc(schedule_id).get();
     if (!scheduleDoc.exists) {
       throw new NotFoundException(`Schedule with ID ${schedule_id} not found`);
     }
 
-    const availabilityRef = this.firestore
-      .collection(this.collectionName)
-      .doc();
+    const availabilityRef = this.collectionName.doc();
 
     const availabilityData = {
       start_hour: admin.firestore.Timestamp.fromDate(
@@ -92,16 +87,16 @@ export class AvailabilityService {
     };
   }
 
+  // Obtener todas las disponibilidades
   async findAll(): Promise<Availability[]> {
-    const snapshot = await this.firestore.collection(this.collectionName).get();
+    const snapshot = await this.collectionName.get();
+
     return snapshot.docs.map((doc) => this.mapDocumentToAvailability(doc));
   }
 
+  // Obtener una disponibilidad por ID
   async findOne(id: string): Promise<Availability> {
-    const doc = await this.firestore
-      .collection(this.collectionName)
-      .doc(id)
-      .get();
+    const doc = await this.collectionName.doc(id).get();
 
     if (!doc.exists) {
       throw new NotFoundException(`Availability with ID ${id} not found`);
@@ -110,20 +105,19 @@ export class AvailabilityService {
     return this.mapDocumentToAvailability(doc);
   }
 
+  // Actualizar disponibilidad
   async update(
     id: string,
     updateAvailabilityDto: UpdateAvailabilityDto,
   ): Promise<Availability> {
-    const availabilityRef = this.firestore
-      .collection(this.collectionName)
-      .doc(id);
+    const availabilityRef = this.collectionName.doc(id);
 
     const doc = await availabilityRef.get();
     if (!doc.exists) {
       throw new NotFoundException(`Availability with ID ${id} not found`);
     }
 
-    // 🔧 Crear objeto que usaremos para actualizar en Firestore
+    // Crear objeto que usaremos para actualizar en Firestore
     const updated_ata: Record<string, any> = {
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     };
@@ -162,22 +156,21 @@ export class AvailabilityService {
       updated_ata.schedule_id = updateAvailabilityDto.schedule_id;
     }
 
-    // ✨ Actualizamos
+    // Actualizamos la disponibilidad
     await availabilityRef.update(updated_ata);
 
     const updatedDoc = await availabilityRef.get();
     return this.mapDocumentToAvailability(updatedDoc);
   }
 
+  // Eliminar disponibilidad
   async remove(id: string): Promise<void> {
-    const doc = await this.firestore
-      .collection(this.collectionName)
-      .doc(id)
-      .get();
+    const doc = await this.collectionName.doc(id).get();
+
     if (!doc.exists) {
       throw new NotFoundException(`Availability with ID ${id} not found`);
     }
 
-    await this.firestore.collection(this.collectionName).doc(id).delete();
+    await this.collectionName.doc(id).delete();
   }
 }

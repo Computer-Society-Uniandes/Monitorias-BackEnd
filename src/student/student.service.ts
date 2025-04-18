@@ -12,15 +12,15 @@ import { Student } from './entities/student.entity';
 @Injectable()
 export class StudentService {
   private db: FirebaseFirestore.Firestore;
-  private studentCollection: FirebaseFirestore.CollectionReference;
+  private collectionName: FirebaseFirestore.CollectionReference;
 
   constructor() {
     this.db = new Firestore();
-    this.studentCollection = this.db.collection('students');
+    this.collectionName = this.db.collection('student');
   }
 
   async create(createStudentDto: CreateStudentDto): Promise<Student> {
-    const docRef = this.studentCollection.doc();
+    const docRef = this.collectionName.doc();
     const data: Student = {
       id: docRef.id,
       ...createStudentDto,
@@ -33,12 +33,12 @@ export class StudentService {
   }
 
   async findAll(): Promise<Student[]> {
-    const snapshot = await this.studentCollection.get();
+    const snapshot = await this.collectionName.get();
     return snapshot.docs.map((doc) => doc.data() as Student);
   }
 
   async findOne(id: string): Promise<Student> {
-    const doc = await this.studentCollection.doc(id).get();
+    const doc = await this.collectionName.doc(id).get();
     if (!doc.exists) {
       throw new NotFoundException(`Student with ID ${id} not found`);
     }
@@ -50,7 +50,7 @@ export class StudentService {
       throw new BadRequestException(`Major ${major} is invalid`);
     }
 
-    const snapshot = await this.studentCollection
+    const snapshot = await this.collectionName
       .where('major', '==', major)
       .get();
 
@@ -78,11 +78,11 @@ export class StudentService {
       updated_at: new Date() as any,
     };
 
-    await this.studentCollection.doc(id).set(updated);
+    await this.collectionName.doc(id).set(updated);
     return updated;
   }
 
   async remove(id: string): Promise<void> {
-    await this.studentCollection.doc(id).delete();
+    await this.collectionName.doc(id).delete();
   }
 }

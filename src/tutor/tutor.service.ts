@@ -11,7 +11,7 @@ import { Tutor } from './entities/tutor.entity';
 @Injectable()
 export class TutorService {
   private firestore = admin.firestore();
-  private tutors = this.firestore.collection('tutors');
+  private collectionName = this.firestore.collection('tutor');
   private availabilities = this.firestore.collection('availabilities');
 
   private mapDocToTutor(doc: FirebaseFirestore.DocumentSnapshot): Tutor {
@@ -26,7 +26,7 @@ export class TutorService {
       throw new BadRequestException('School email must end with .edu.co');
     }
     // Validar unicidad de email
-    const existing = await this.tutors
+    const existing = await this.collectionName
       .where('school_email', '==', dto.school_email)
       .limit(1)
       .get();
@@ -34,7 +34,7 @@ export class TutorService {
       throw new BadRequestException('Tutor with this email already exists');
     }
 
-    const ref = this.tutors.doc();
+    const ref = this.collectionName.doc();
     const tutor: Tutor = {
       id: ref.id,
       first_name: dto.first_name,
@@ -66,7 +66,7 @@ export class TutorService {
     minRating?: number;
     minExperience?: number;
   }): Promise<Tutor[]> {
-    let query: FirebaseFirestore.Query = this.tutors;
+    let query: FirebaseFirestore.Query = this.collectionName;
 
     if (params?.course_id) {
       query = query.where('course_ids', 'array-contains', params.course_id);
@@ -76,12 +76,12 @@ export class TutorService {
     }
 
     const snap = await query.get();
-    let tutors = snap.docs.map((d) => this.mapDocToTutor(d));
+    let collectionName = snap.docs.map((d) => this.mapDocToTutor(d));
 
     // Filtrado en memoria para búsquedas por nombre y rating
     if (params?.search) {
       const q = params.search.toLowerCase();
-      tutors = tutors.filter(
+      collectionName = collectionName.filter(
         (t) =>
           t.first_name.toLowerCase().includes(q) ||
           t.last_name.toLowerCase().includes(q),
@@ -89,15 +89,17 @@ export class TutorService {
     }
     if (params?.minRating !== undefined) {
       // Si guardas avgRating en el doc, úsalo. Aquí asumimos que existe.
-      tutors = tutors.filter((t) => (t as any).avgRating >= params.minRating);
+      collectionName = collectionName.filter(
+        (t) => (t as any).avgRating >= params.minRating,
+      );
     }
 
-    return tutors;
+    return collectionName;
   }
 
   // Obtener un tutor por ID
   async findOne(id: string): Promise<Tutor> {
-    const doc = await this.tutors.doc(id).get();
+    const doc = await this.collectionName.doc(id).get();
     if (!doc.exists) {
       throw new NotFoundException(`Tutor with ID ${id} not found`);
     }
@@ -106,7 +108,7 @@ export class TutorService {
 
   // Buscar tutor por email
   async findByEmail(email: string): Promise<Tutor> {
-    const snap = await this.tutors
+    const snap = await this.collectionName
       .where('school_email', '==', email)
       .limit(1)
       .get();
@@ -118,7 +120,7 @@ export class TutorService {
 
   // Tutores de un curso específico
   async findByCourse(course_id: string): Promise<Tutor[]> {
-    const snap = await this.tutors
+    const snap = await this.collectionName
       .where('course_ids', 'array-contains', course_id)
       .get();
     return snap.docs.map((d) => this.mapDocToTutor(d));
@@ -131,7 +133,7 @@ export class TutorService {
     }
     if (dto.school_email) {
       // Validar unicidad
-      const dup = await this.tutors
+      const dup = await this.collectionName
         .where('school_email', '==', dto.school_email)
         .limit(1)
         .get();
@@ -147,15 +149,15 @@ export class TutorService {
     if (dto.availability_ids)
       updated_ata.availability_ids = dto.availability_ids;
 
-    await this.tutors.doc(id).update(updated_ata);
-    const updated = await this.tutors.doc(id).get();
+    await this.collectionName.doc(id).update(updated_ata);
+    const updated = await this.collectionName.doc(id).get();
     return this.mapDocToTutor(updated);
   }
 
   // Eliminar tutor
   async remove(id: string): Promise<void> {
     // Si quieres prohibir la eliminación con sesiones activas, revisa tutoring_session_ids
-    await this.tutors.doc(id).delete();
+    await this.collectionName.doc(id).delete();
   }
 
   // Actualizar rating (si guardas avgRating)
@@ -163,8 +165,8 @@ export class TutorService {
     if (newRating < 0 || newRating > 5) {
       throw new BadRequestException('Rating must be between 0 and 5');
     }
-    await this.tutors.doc(id).update({ avgRating: newRating });
-    const doc = await this.tutors.doc(id).get();
+    await this.collectionName.doc(id).update({ avgRating: newRating });
+    const doc = await this.collectionName.doc(id).get();
     return this.mapDocToTutor(doc);
   }
 
@@ -177,7 +179,7 @@ export class TutorService {
     maxCredits?: number;
     hasAvailability?: boolean;
   }): Promise<Tutor[]> {
-    let query: FirebaseFirestore.Query = this.tutors;
+    let query: FirebaseFirestore.Query = this.collectionName;
 
     if (filters.course_ids?.length) {
       query = query.where(
@@ -194,24 +196,28 @@ export class TutorService {
     }
 
     const snap = await query.get();
-    let tutors = snap.docs.map((d) => this.mapDocToTutor(d));
+    let collectionName = snap.docs.map((d) => this.mapDocToTutor(d));
 
     if (filters.name) {
       const q = filters.name.toLowerCase();
-      tutors = tutors.filter(
+      collectionName = collectionName.filter(
         (t) =>
           t.first_name.toLowerCase().includes(q) ||
           t.last_name.toLowerCase().includes(q),
       );
     }
     if (filters.major) {
-      tutors = tutors.filter((t) => (t as any).major === filters.major);
+      collectionName = collectionName.filter(
+        (t) => (t as any).major === filters.major,
+      );
     }
     if (filters.hasAvailability) {
-      tutors = tutors.filter((t) => (t.availability_ids ?? []).length > 0);
+      collectionName = collectionName.filter(
+        (t) => (t.availability_ids ?? []).length > 0,
+      );
     }
 
-    return tutors;
+    return collectionName;
   }
 
   // Buscar tutores con disponibilidad según criterios
@@ -250,11 +256,14 @@ export class TutorService {
     const tutor_ids = Array.from(
       new Set(availSnap.docs.map((d) => d.data().tutor_id)),
     );
-    if (!tutor_ids.length) throw new NotFoundException('No tutors found');
+    if (!tutor_ids.length)
+      throw new NotFoundException('No collectionName found');
 
     // Obtener los tutores correspondientes
-    const tutorsSnap = await this.tutors.where('id', 'in', tutor_ids).get();
-    return tutorsSnap.docs.map((d) => this.mapDocToTutor(d));
+    const collectionNameSnap = await this.collectionName
+      .where('id', 'in', tutor_ids)
+      .get();
+    return collectionNameSnap.docs.map((d) => this.mapDocToTutor(d));
   }
 
   // Criterios combinados (ejemplo)
@@ -266,10 +275,12 @@ export class TutorService {
     minRating?: number;
   }): Promise<Tutor[]> {
     // Reutilizamos findByFilters y luego filtramos rating
-    let tutors = await this.findByFilters(criteria);
+    let collectionName = await this.findByFilters(criteria);
     if (criteria.minRating !== undefined) {
-      tutors = tutors.filter((t) => (t as any).avgRating >= criteria.minRating);
+      collectionName = collectionName.filter(
+        (t) => (t as any).avgRating >= criteria.minRating,
+      );
     }
-    return tutors;
+    return collectionName;
   }
 }

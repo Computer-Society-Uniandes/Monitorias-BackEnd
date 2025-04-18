@@ -11,7 +11,7 @@ import { TutoringPlatform } from './entities/tutoring_platform.entity';
 @Injectable()
 export class TutoringPlatformsService {
   private readonly db = admin.firestore();
-  private readonly collection = this.db.collection('tutoring_platforms');
+  private readonly collectionName = this.db.collection('tutoring_platform');
 
   // Helper to map a Firestore DocumentSnapshot to our TutoringPlatform model
   private mapDocToTutoringPlatform(
@@ -36,7 +36,7 @@ export class TutoringPlatformsService {
   // Create a new platform
   async create(dto: CreateTutoringPlatformDto): Promise<TutoringPlatform> {
     // check uniqueness
-    const exists = await this.collection
+    const exists = await this.collectionName
       .where('name', '==', dto.name)
       .limit(1)
       .get();
@@ -54,20 +54,20 @@ export class TutoringPlatformsService {
       group_tutoring_sessions: [] as any[],
     };
 
-    const ref = await this.collection.add(data);
+    const ref = await this.collectionName.add(data);
     const doc = await ref.get();
     return this.mapDocToTutoringPlatform(doc);
   }
 
   // Get all platforms
   async findAll(): Promise<TutoringPlatform[]> {
-    const snap = await this.collection.get();
+    const snap = await this.collectionName.get();
     return snap.docs.map((doc) => this.mapDocToTutoringPlatform(doc));
   }
 
   // Get a platform by ID
   async findOne(id: string): Promise<TutoringPlatform> {
-    const doc = await this.collection.doc(id).get();
+    const doc = await this.collectionName.doc(id).get();
     if (!doc.exists) {
       throw new NotFoundException(`Tutoring platform with ID ${id} not found`);
     }
@@ -76,7 +76,10 @@ export class TutoringPlatformsService {
 
   // Get a platform by name
   async findByName(name: string): Promise<TutoringPlatform> {
-    const snap = await this.collection.where('name', '==', name).limit(1).get();
+    const snap = await this.collectionName
+      .where('name', '==', name)
+      .limit(1)
+      .get();
     if (snap.empty) {
       throw new NotFoundException(
         `Tutoring platform with name ${name} not found`,
@@ -87,7 +90,7 @@ export class TutoringPlatformsService {
 
   // Get only active platforms
   async findActive(): Promise<TutoringPlatform[]> {
-    const snap = await this.collection.where('is_active', '==', true).get();
+    const snap = await this.collectionName.where('is_active', '==', true).get();
     return snap.docs.map((doc) => this.mapDocToTutoringPlatform(doc));
   }
 
@@ -96,7 +99,7 @@ export class TutoringPlatformsService {
     id: string,
     dto: UpdateTutoringPlatformDto,
   ): Promise<TutoringPlatform> {
-    const ref = this.collection.doc(id);
+    const ref = this.collectionName.doc(id);
     const doc = await ref.get();
     if (!doc.exists) {
       throw new NotFoundException(`Tutoring platform with ID ${id} not found`);
@@ -118,7 +121,7 @@ export class TutoringPlatformsService {
 
   // Delete a platform
   async remove(id: string): Promise<void> {
-    const ref = this.collection.doc(id);
+    const ref = this.collectionName.doc(id);
     const doc = await ref.get();
     if (!doc.exists) {
       throw new NotFoundException(`Tutoring platform with ID ${id} not found`);
@@ -128,7 +131,7 @@ export class TutoringPlatformsService {
 
   // Toggle the active flag
   async toggleActive(id: string): Promise<TutoringPlatform> {
-    const ref = this.collection.doc(id);
+    const ref = this.collectionName.doc(id);
     const doc = await ref.get();
     if (!doc.exists) {
       throw new NotFoundException(`Tutoring platform with ID ${id} not found`);
